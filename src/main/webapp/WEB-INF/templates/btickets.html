@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tickets</title>
+    <link rel="stylesheet" href="../../../css/main-static.css" th:href="@{/css/main.css}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h2 th:text="${title}">Title</h2>
+<table class="table table-bordered">
+    <thead>
+    <tr class="center middle">
+        <th>SNO</th>
+        <th>ID</th>
+        <th>PRICE</th>
+        <th>SEAT</th>
+        <th>EVENT</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="ticket,rowStat : ${tickets}">
+        <td class="center middle" th:text="${rowStat.count}">1</td>
+        <td class="center middle" th:text="${ticket.id}">0</td>
+        <td class="center middle" th:text="${ticket.price}">0.0</td>
+        <td class="center middle" th:text="${ticket.seat.number}">1</td>
+        <td class="center middle" th:text="${ticket.event.name}">EVENT</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
