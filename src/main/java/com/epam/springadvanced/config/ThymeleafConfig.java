@@ -39,15 +39,4 @@ public class ThymeleafConfig {
 
         return viewResolver;
     }
-
-    //Defines the ViewResolver that Spring will use to render the views.
-//    @Bean
-//    public ViewResolver viewResolver() {
-//        System.out.println("Inside View Resolver...");
-//        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-//        viewResolver.setViewClass(JstlView.class);
-//        viewResolver.setPrefix("/WEB-INF/views/");
-//        viewResolver.setSuffix(".jsp");
-//        return viewResolver;
-//    }
 }

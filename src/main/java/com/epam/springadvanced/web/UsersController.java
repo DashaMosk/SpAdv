@@ -78,9 +78,8 @@ public class UsersController {
     }
 
     @RequestMapping(path = "/user/bookedtickets", produces={"application/pdf"})
-    @ResponseBody
     public void getTicketsReport(HttpServletResponse response) throws JRException, IOException {
-        InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/tickets.jasper");
+        InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/ticketsrep.jasper");
         Map<String,Object> params = new HashMap<>();
         JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
         //params.put("title", "Booked Tickets");
@@ -95,5 +94,10 @@ public class UsersController {
         JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
     }
 
+    @RequestMapping(value = "/user/errortest", method = RequestMethod.GET)
+    public void getError() throws Exception {
+        IOException ex = new IOException("Test exception");
+        throw ex;
+    }
 
 }
