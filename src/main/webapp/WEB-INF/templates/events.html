@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Events</title>
+    <link rel="stylesheet" href="../../css/app.css" th:href="@{/css/app.css}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h2 th:text="${title}">Title</h2>
+<table class="table table-bordered">
+    <thead>
+    <tr class="center middle">
+        <th>SNO</th>
+        <th>ID</th>
+        <th>NAME</th>
+        <th>TIME</th>
+        <th>PRICE</th>
+        <th>RATING</th>
+        <th>AUDITORIUM</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="event,rowStat : ${events}">
+        <td class="center middle" th:text="${rowStat.count}">1</td>
+        <td class="center middle" th:text="${event.id}">0</td>
+        <td class="center middle" th:text="${event.name}">EVENT</td>
+        <td class="center middle" th:text="${event.dateTime}">2016-01-01 18:00</td>
+        <td class="center middle" th:text="${event.ticketPrice}">0.0</td>
+        <td class="center middle" th:text="${event.rating}">RATING</td>
+        <td class="center middle" th:text="${event.auditorium.name}">AUDITORIUM</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

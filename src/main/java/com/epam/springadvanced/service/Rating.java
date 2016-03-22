@@ -1,5 +1,12 @@
 package com.epam.springadvanced.service;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public enum Rating {
     HIGH(0), MID(1), LOW(2);
 
@@ -17,5 +24,28 @@ public enum Rating {
 
     public int getValue(){
         return value;
+    }
+
+    private static Map<String, Rating> namesMap = new HashMap<String, Rating>(3);
+
+    static {
+        namesMap.put("HIGH", HIGH);
+        namesMap.put("MID", MID);
+        namesMap.put("LOW", LOW);
+    }
+
+    @JsonCreator
+    public static Rating forValue(String value) {
+        return namesMap.get(StringUtils.lowerCase(value));
+    }
+
+    @JsonValue
+    public String toValue() {
+        for (Map.Entry<String, Rating> entry : namesMap.entrySet()) {
+            if (entry.getValue() == this)
+                return entry.getKey();
+        }
+
+        return null; // or fail
     }
 }

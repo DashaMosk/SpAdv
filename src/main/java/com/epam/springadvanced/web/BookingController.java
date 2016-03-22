@@ -1,18 +1,19 @@
 package com.epam.springadvanced.web;
 
 import com.epam.springadvanced.entity.Ticket;
-import com.epam.springadvanced.service.BookingService;
-import com.epam.springadvanced.service.EventService;
-import com.epam.springadvanced.service.UserService;
+import com.epam.springadvanced.service.*;
 import com.epam.springadvanced.service.exception.EventNotAssignedException;
 import com.epam.springadvanced.service.exception.TicketAlreadyBookedException;
 import com.epam.springadvanced.service.exception.TicketWithoutEventException;
 import com.epam.springadvanced.service.exception.UserNotRegisteredException;
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -26,6 +27,8 @@ public class BookingController {
     EventService eventService;
     @Autowired
     UserService userService;
+    @Autowired
+    ReportService reportService;
 
     @RequestMapping(path = "/booking/cost", method = RequestMethod.GET)
     @ResponseBody
@@ -50,6 +53,12 @@ public class BookingController {
     public String getTickets(@RequestParam final long eventId, @RequestParam final LocalDateTime dateTime){
         bookingService.getTicketsForEvent(eventService.getById(eventId), dateTime);
         return "tickets";
+    }
+
+    @RequestMapping(path = "/booking/tickets", produces={"application/pdf"})
+    public void getTicketsRepByEvent(HttpServletResponse response, @RequestParam final long eventId,
+                                     @RequestParam final LocalDateTime dateTime) throws JRException, IOException {
+        reportService.getTicketRepPDF(response, TRepKind.FOREVENT, 0, eventService.getById(eventId), dateTime);
     }
 
 }

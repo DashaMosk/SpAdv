@@ -13,6 +13,8 @@ public class Event implements Serializable{
     private Rating rating;
     private Auditorium auditorium;
 
+    public Event() {}
+
     public Event(long id, String name, LocalDateTime dateTime, float ticketPrice, Rating rating) {
         this.id = id;
         this.name = name;
@@ -26,6 +28,12 @@ public class Event implements Serializable{
         this.dateTime = dateTime;
         this.ticketPrice = ticketPrice;
         this.rating = rating;
+    }
+
+    public Event(String name, LocalDateTime dateTime, float ticketPrice) {
+        this.name = name;
+        this.dateTime = dateTime;
+        this.ticketPrice = ticketPrice;
     }
 
     public Long getId() {

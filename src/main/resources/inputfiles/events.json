@@ -1,4 +1,4 @@
 [
-    {"name":"Jazz consert", "dateTime":"2016-05-26 18:00:00", "ticketPrice":"150.0", "rating":"HIGH"},
-	{"name":"Ballet", "dateTime":"2016-04-04 18:00:00", "ticketPrice":"200.0", "rating":"HIGH"}
+    {"name":"Jazz consert", "dateTime":"2016-04-11T18:00:00.001", "ticketPrice":150.0, "rating":"HIGH"},
+	{"name":"Ballet", "dateTime":"2016-04-10T18:00:00.001", "ticketPrice":200.0, "rating":"HIGH"}
 ]

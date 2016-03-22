@@ -2,10 +2,10 @@ package com.epam.springadvanced.web;
 
 import com.epam.springadvanced.entity.Ticket;
 import com.epam.springadvanced.entity.User;
+import com.epam.springadvanced.service.ReportService;
+import com.epam.springadvanced.service.TRepKind;
 import com.epam.springadvanced.service.UserService;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -14,12 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/bookingservice")
@@ -27,6 +23,9 @@ public class UsersController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ReportService reportService;
+
 
     @RequestMapping(path="/user/create", method = RequestMethod.POST)
     @ResponseBody
@@ -75,21 +74,22 @@ public class UsersController {
         return "btickets";
     }
 
+    @RequestMapping(path = "/user/ticketsbyuser", method = RequestMethod.GET)
+    public String getTicketsByUser(ModelMap model, @RequestParam final long userId){
+        Collection<Ticket> tickets = userService.getBookedTicketsByUserId(userId);
+        model.addAttribute("tickets", tickets);
+        model.addAttribute("title", "Booked tickets by user");
+        return "btickets";
+    }
+
     @RequestMapping(path = "/user/bookedtickets", produces={"application/pdf"})
-    public void getTicketsReport(HttpServletResponse response) throws JRException, IOException {
-        InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/ticketsrep.jasper");
-        Map<String,Object> params = new HashMap<>();
-        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
-        //params.put("title", "Booked Tickets");
-        Collection<Ticket> tickets = userService.getBookedTickets();
-        JRDataSource JRdataSource = new JRBeanCollectionDataSource(tickets);
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, JRdataSource);
+    public void getBookedTicketsRep(HttpServletResponse response) throws JRException, IOException {
+        reportService.getTicketRepPDF(response, TRepKind.BOOKED, 0, null, null);
+    }
 
-        response.setContentType("application/x-pdf");
-        response.setHeader("Content-disposition", "inline; filename=tickets.pdf");
-
-        final OutputStream outStream = response.getOutputStream();
-        JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+    @RequestMapping(path = "/user/ticketsbyuser", produces={"application/pdf"})
+    public void getTicketsRepByUser(HttpServletResponse response, @RequestParam final long userId) throws JRException, IOException {
+        reportService.getTicketRepPDF(response, TRepKind.BYUSER, userId, null, null);
     }
 
     @RequestMapping(value = "/user/errortest", method = RequestMethod.GET)

@@ -79,14 +79,20 @@ public class UserRepositoryImpl implements UserRepository {
             } else {
                 user = updatedUser;
             }
-            updateRoles(user.getId(), user.getRoles());
+            if(user.getRoles() != null) {
+                updateRoles(user.getId(), user.getRoles());
+            }
         }
 
         return user;
     }
 
     private void updateRoles(long userId, List<Role> roles) {
-        jdbcTemplate.update(DELETE_USER_ROLE, userId);
+        try {
+            jdbcTemplate.update(DELETE_USER_ROLE, userId);
+        }catch(Exception ex) {
+            System.out.println("Issue with access to data");
+        }
         for (Role role : roles) {
             SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
             Map<String, Object> args = new HashMap<>();

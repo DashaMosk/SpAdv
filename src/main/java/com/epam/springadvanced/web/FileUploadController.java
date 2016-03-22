@@ -1,12 +1,6 @@
 package com.epam.springadvanced.web;
 
-import com.epam.springadvanced.entity.Event;
-import com.epam.springadvanced.entity.User;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.epam.springadvanced.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -23,10 +17,10 @@ import java.io.IOException;
 @RequestMapping("/bookingservice")
 public class FileUploadController {
 
-    private static String OUTPUT_LOCATION="C:/mytemp/";
-
     @Autowired
     MultiFileValidator multiFileValidator;
+    @Autowired
+    UploadService uploadService;
 
     @InitBinder("multiFileBucket")
     protected void initBinderMultiFileBucket(WebDataBinder binder) {
@@ -42,19 +36,7 @@ public class FileUploadController {
 
     @RequestMapping(path="/uploadfile", method = RequestMethod.POST)
     public String fileUpload(@RequestPart("file") MultipartFile file, ModelMap model) throws IOException {
-        JsonFactory f = new JsonFactory();
-        JsonParser jp = f.createParser(file.getInputStream());
-//      File jp = new File(OUTPUT_LOCATION + file.getOriginalFilename());
-//      FileCopyUtils.copy(file.getBytes(), jp);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        if(file.getOriginalFilename().equals("${users.file}")) {
-            User[] users = mapper.readValue(jp, User[].class);
-        }
-        if(file.getOriginalFilename().equals("${events.file}")) {
-            Event[] events = mapper.readValue(jp, Event[].class);
-        }
+        uploadService.uploadFile(file);
         model.addAttribute("fileName", file.getOriginalFilename());
         return "successupload";
     }
