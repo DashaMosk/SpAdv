@@ -1,28 +1,29 @@
 package com.epam.springadvanced.web;
 
-import com.epam.springadvanced.FileBucket;
-import com.epam.springadvanced.MultiFileBucket;
-import com.epam.springadvanced.MultiFileValidator;
+import com.epam.springadvanced.entity.Event;
+import com.epam.springadvanced.entity.User;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
+@RequestMapping("/bookingservice")
 public class FileUploadController {
 
-    private static String UPLOAD_LOCATION="C:/mytemp/";
+    private static String OUTPUT_LOCATION="C:/mytemp/";
 
     @Autowired
     MultiFileValidator multiFileValidator;
@@ -32,31 +33,29 @@ public class FileUploadController {
         binder.setValidator(multiFileValidator);
     }
 
-    @RequestMapping(value="/multiUpload", method = RequestMethod.GET)
-    public String getMultiUploadPage(ModelMap model) {
-        MultiFileBucket filesModel = new MultiFileBucket();
-        model.addAttribute("multiFileBucket", filesModel);
-        return "multiFileUploader";
+    @RequestMapping(path="/uploadform", method = RequestMethod.GET)
+    public String getuploaderPage(ModelMap model) {
+        FileBucket fileModel = new FileBucket();
+        model.addAttribute("fileBucket", fileModel);
+        return "fileuploader";
     }
 
-    @RequestMapping(value="/multiUpload", method = RequestMethod.POST)
-    public String multiFileUpload(@Valid MultiFileBucket multiFileBucket, BindingResult result, ModelMap model) throws IOException {
-
-        if (result.hasErrors()) {
-            System.out.println("validation errors in multi upload");
-            return "multiFileUploader";
-        } else {
-            System.out.println("Fetching files");
-            List<String> fileNames= new ArrayList<String>();
-
-            //Now do something with file...
-            for(FileBucket bucket : multiFileBucket.getFiles()){
-                FileCopyUtils.copy(bucket.getFile().getBytes(), new File(UPLOAD_LOCATION + bucket.getFile().getOriginalFilename()));
-                fileNames.add(bucket.getFile().getOriginalFilename());
-            }
-
-            model.addAttribute("fileNames", fileNames);
-            return "multiSuccess";
+    @RequestMapping(path="/uploadfile", method = RequestMethod.POST)
+    public String fileUpload(@RequestPart("file") MultipartFile file, ModelMap model) throws IOException {
+        JsonFactory f = new JsonFactory();
+        JsonParser jp = f.createParser(file.getInputStream());
+//      File jp = new File(OUTPUT_LOCATION + file.getOriginalFilename());
+//      FileCopyUtils.copy(file.getBytes(), jp);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        if(file.getOriginalFilename().equals("${users.file}")) {
+            User[] users = mapper.readValue(jp, User[].class);
         }
+        if(file.getOriginalFilename().equals("${events.file}")) {
+            Event[] events = mapper.readValue(jp, Event[].class);
+        }
+        model.addAttribute("fileName", file.getOriginalFilename());
+        return "successupload";
     }
 }

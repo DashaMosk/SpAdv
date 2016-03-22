@@ -1,4 +1,4 @@
-package com.epam.springadvanced;
+package com.epam.springadvanced.web;
 
 import java.util.ArrayList;
 import java.util.List;

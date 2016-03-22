@@ -1,4 +1,4 @@
-package com.epam.springadvanced;
+package com.epam.springadvanced.web;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

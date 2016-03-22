@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <title>File Upload</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<form action="/bookingservice/uploadfile" th:object="${file}" enctype="multipart/form-data" method="post">
+    <input type="file" name="file" id="file" /> <br/>
+    <input type="submit" value="Upload"/>
+</form>
+</body>
+</html>

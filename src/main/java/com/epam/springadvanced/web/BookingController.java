@@ -1,7 +1,6 @@
 package com.epam.springadvanced.web;
 
 import com.epam.springadvanced.entity.Ticket;
-import com.epam.springadvanced.entity.User;
 import com.epam.springadvanced.service.BookingService;
 import com.epam.springadvanced.service.EventService;
 import com.epam.springadvanced.service.UserService;

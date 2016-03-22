@@ -1,4 +1,4 @@
-package com.epam.springadvanced;
+package com.epam.springadvanced.web;
 
 import org.springframework.web.multipart.MultipartFile;
 
