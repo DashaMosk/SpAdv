@@ -36,7 +36,7 @@ public enum Rating {
 
     @JsonCreator
     public static Rating forValue(String value) {
-        return namesMap.get(StringUtils.lowerCase(value));
+        return namesMap.get(StringUtils.upperCase(value));
     }
 
     @JsonValue
