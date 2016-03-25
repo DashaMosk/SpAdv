@@ -4,6 +4,7 @@ import com.epam.springadvanced.entity.Role;
 import com.epam.springadvanced.entity.User;
 import com.epam.springadvanced.repository.UserRepository;
 import com.epam.springadvanced.repository.WinsRepository;
+import com.epam.springadvanced.service.Roles;
 import com.epam.springadvanced.utils.Convert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -97,7 +98,7 @@ public class UserRepositoryImpl implements UserRepository {
             SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
             Map<String, Object> args = new HashMap<>();
             args.put("user_id", userId);
-            args.put("role_id", getRoleByName(role.getName()).getId());
+            args.put("role_id", getRoleByName(role.getName().name()));
             insert.execute(args);
         }
     }
@@ -107,6 +108,10 @@ public class UserRepositoryImpl implements UserRepository {
             return jdbcTemplate.queryForObject(SELECT_ROLE_BY_NAME, roleMapper(), name);
         } catch (EmptyResultDataAccessException ignored) {}
         return null;
+    }
+
+    private boolean hasRegisterUserRole(List<Role> roles) {
+        return true;
     }
 
     @Override
@@ -158,7 +163,7 @@ public class UserRepositoryImpl implements UserRepository {
         return (rs, rowNum) -> {
             Role role = new Role();
             role.setId(rs.getInt(1));
-            role.setName(rs.getString(2));
+            role.setName(Roles.valueOf(rs.getString(2)));
             return role;
         };
     }

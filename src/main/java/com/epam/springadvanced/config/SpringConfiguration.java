@@ -4,7 +4,11 @@ import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@Import({AspectConfiguration.class, DataConfiguration.class, AuditoriumConfiguration.class})
+@Import({AspectConfiguration.class
+        , DataConfiguration.class
+        , AuditoriumConfiguration.class
+        , WebSecurityConfiguration.class
+})
 @PropertySource("classpath:auditorium1.properties")
 @PropertySource("classpath:auditorium2.properties")
 @PropertySource("classpath:auditorium3.properties")
