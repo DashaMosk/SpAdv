@@ -7,9 +7,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<form action="/bookingservice/uploadfile" th:object="${file}" enctype="multipart/form-data" method="post">
-    <input type="file" name="file" id="file" /> <br/>
-    <input type="submit" value="Upload"/>
+<form th:action="@{/uploadfile}" th:object="${file}" enctype="multipart/form-data" method="post">
+    <fieldset>
+        <input type="file" name="file" id="file" /> <br/>
+        <input type="submit" value="Upload"/>
+    </fieldset>
 </form>
 </body>
 </html>

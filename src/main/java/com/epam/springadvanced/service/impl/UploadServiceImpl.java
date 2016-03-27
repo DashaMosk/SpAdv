@@ -39,6 +39,7 @@ public class UploadServiceImpl implements UploadService {
             User[] users = mapper.readValue(jp, User[].class);
             for(User user : users) {
                 User newUser = userService.create(user.getName(), user.getEmail(), user.getBirthday());
+                newUser.setPassword(user.getPassword());
                 userService.register(newUser);
             }
         }

@@ -1,5 +1,5 @@
 [
-    {"name":"John", "email":"John@gmail.com", "birthday":"1990-11-01"},
-    {"name":"Ivan", "email":"Ivan@gmail.com", "birthday":"1985-05-01"},
-    {"name":"Yulia", "email":"Yulia@gmail.com", "birthday":"1992-03-01"}
+    {"name":"John", "email":"John@gmail.com", "birthday":"1990-11-01", "password":"123"},
+    {"name":"Ivan", "email":"Ivan@gmail.com", "birthday":"1985-05-01", "password":"123"},
+    {"name":"Yulia", "email":"Yulia@gmail.com", "birthday":"1992-03-01", "password":"123"}
 ]

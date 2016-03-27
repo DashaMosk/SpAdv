@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.LocalDateTime;
 
 @Controller
-@RequestMapping("/bookingservice")
 public class DiscountController {
     @Autowired
     private UserService userService;

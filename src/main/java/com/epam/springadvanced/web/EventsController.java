@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Controller
-@RequestMapping("/bookingservice")
 public class EventsController {
     @Autowired
     EventService eventService;

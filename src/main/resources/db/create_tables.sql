@@ -76,8 +76,8 @@ CREATE TABLE PUBLIC.persistent_logins (
 INSERT INTO role(id,name) VALUES (0,'REGISTERED_USER');
 INSERT INTO role(id,name) VALUES (1,'BOOKING_MANAGER');
 
-INSERT INTO user(id,name, email, birthday, password) VALUES (0,'admin','oleg.motorin@gmail.com',date'1978-12-08','$2a$08$l65pz/4gXDQAxgXuVCC.rOzv0MMzlk2JNGFxDwGV2zMsHuAry2Qki');
-INSERT INTO user(id,name, email, birthday, password) VALUES (1,'oleg','oleg.motorin@gmail.com',date'1978-12-08','$2a$08$l65pz/4gXDQAxgXuVCC.rOzv0MMzlk2JNGFxDwGV2zMsHuAry2Qki');
+INSERT INTO user(id,name, email, birthday, password) VALUES (0,'admin','oleg.motorin@gmail.com',date'1978-12-08','admin123');
+INSERT INTO user(id,name, email, birthday, password) VALUES (1,'oleg','oleg.motorin@gmail.com',date'1978-12-08','oleg123');
 
 INSERT INTO roles(user_id, role_id) VALUES (0,0);
 INSERT INTO roles(user_id, role_id) VALUES (0,1);

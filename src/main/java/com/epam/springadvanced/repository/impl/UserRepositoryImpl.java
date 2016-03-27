@@ -1,6 +1,7 @@
 package com.epam.springadvanced.repository.impl;
 
 import com.epam.springadvanced.entity.Role;
+import com.epam.springadvanced.entity.Token;
 import com.epam.springadvanced.entity.User;
 import com.epam.springadvanced.repository.UserRepository;
 import com.epam.springadvanced.repository.WinsRepository;
@@ -11,13 +12,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Optional.ofNullable;
 
@@ -37,6 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
                     "join roles rs on rs.role_id = r.id\n" +
                     "where user_id=?";
     private static final String SELECT_ROLE_BY_NAME = "select * from role where name = ?";
+    private static final String SELECT_TOKENS = "select * from persistent_logins";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -75,14 +75,19 @@ public class UserRepositoryImpl implements UserRepository {
                 args.put("name", user.getName());
                 args.put("email", user.getEmail());
                 args.put("birthDay", Convert.toTimestamp(user.getBirthday()));
-                args.put("password", user.getPassword());
+                Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+                args.put("password", encoder.encodePassword(user.getPassword(), user.getEmail()));
                 user.setId(insert.executeAndReturnKey(args).longValue());
             } else {
                 user = updatedUser;
             }
-            if(user.getRoles() != null) {
-                updateRoles(user.getId(), user.getRoles());
+            if(user.getRoles() == null) {
+                user.setRoles(new LinkedList<>());
             }
+            if(!hasRegisteredUserRole(user.getRoles())) {
+                user.getRoles().add(new Role(getRoleByName(Roles.REGISTERED_USER.name()).getId(), Roles.REGISTERED_USER));
+            }
+            updateRoles(user.getId(), user.getRoles());
         }
 
         return user;
@@ -98,7 +103,7 @@ public class UserRepositoryImpl implements UserRepository {
             SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
             Map<String, Object> args = new HashMap<>();
             args.put("user_id", userId);
-            args.put("role_id", getRoleByName(role.getName().name()));
+            args.put("role_id", getRoleByName(role.getName().name()).getId());
             insert.execute(args);
         }
     }
@@ -110,8 +115,13 @@ public class UserRepositoryImpl implements UserRepository {
         return null;
     }
 
-    private boolean hasRegisterUserRole(List<Role> roles) {
-        return true;
+    private boolean hasRegisteredUserRole(List<Role> roles) {
+        for(Role r : roles) {
+            if(r.getName().equals(Roles.REGISTERED_USER)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -159,12 +169,27 @@ public class UserRepositoryImpl implements UserRepository {
         return jdbcTemplate.query(SELECT_USER_ROLES, roleMapper(), userId);
     }
 
+    @Override
+    public List<Token> getTokens() {
+        return jdbcTemplate.query(SELECT_TOKENS, tokenMapper());
+    }
+
     private RowMapper<Role> roleMapper() {
         return (rs, rowNum) -> {
             Role role = new Role();
             role.setId(rs.getInt(1));
             role.setName(Roles.valueOf(rs.getString(2)));
             return role;
+        };
+    }
+
+    private RowMapper<Token> tokenMapper() {
+        return (rs, rowNum) -> {
+            Token token = new Token();
+            token.setUserName(rs.getString(1));
+            token.setSeries(rs.getString(2));
+            token.setToken(rs.getString(3));
+            return token;
         };
     }
 

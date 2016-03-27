@@ -1,6 +1,7 @@
 package com.epam.springadvanced.service.impl;
 
 import com.epam.springadvanced.entity.Ticket;
+import com.epam.springadvanced.entity.Token;
 import com.epam.springadvanced.entity.User;
 import com.epam.springadvanced.repository.TicketRepository;
 import com.epam.springadvanced.repository.UserRepository;
@@ -64,5 +65,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<Ticket> getBookedTicketsByUserId(long userId) {
         return ticketRepository.getBookedTicketsByUserId(userId);
+    }
+
+    @Override
+    public Collection<Token> getTokens() {
+        return userRepository.getTokens();
     }
 }

@@ -1,6 +1,7 @@
 package com.epam.springadvanced.service;
 
 import com.epam.springadvanced.entity.Ticket;
+import com.epam.springadvanced.entity.Token;
 import com.epam.springadvanced.entity.User;
 
 import java.time.LocalDate;
@@ -15,4 +16,5 @@ public interface UserService {
     User getUserByName(String name);
     Collection<Ticket> getBookedTickets();
     Collection<Ticket> getBookedTicketsByUserId(long userId);
+    Collection<Token> getTokens();
 }

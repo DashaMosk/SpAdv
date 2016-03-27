@@ -1,6 +1,5 @@
 package com.epam.springadvanced.entity;
 
-import com.epam.springadvanced.service.Roles;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;

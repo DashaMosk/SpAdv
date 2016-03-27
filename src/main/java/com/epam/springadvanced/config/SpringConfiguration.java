@@ -8,6 +8,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
         , DataConfiguration.class
         , AuditoriumConfiguration.class
         , WebSecurityConfiguration.class
+        , GlobalAuthenticationConfig.class
 })
 @PropertySource("classpath:auditorium1.properties")
 @PropertySource("classpath:auditorium2.properties")

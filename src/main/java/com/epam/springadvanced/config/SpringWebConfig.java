@@ -26,6 +26,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("forward:/index.html");
+        registry.addViewController("/loginpage").setViewName("loginpage");
     }
 
     @Bean(name = "multipartResolver")

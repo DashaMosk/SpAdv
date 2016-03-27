@@ -1,5 +1,6 @@
 package com.epam.springadvanced.repository;
 
+import com.epam.springadvanced.entity.Token;
 import com.epam.springadvanced.entity.User;
 
 import java.util.Collection;
@@ -12,4 +13,5 @@ public interface UserRepository {
     User findByName(String name);
 
     Collection<User> getAll();
+    Collection<Token> getTokens();
 }

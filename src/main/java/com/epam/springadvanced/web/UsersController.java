@@ -1,6 +1,7 @@
 package com.epam.springadvanced.web;
 
 import com.epam.springadvanced.entity.Ticket;
+import com.epam.springadvanced.entity.Token;
 import com.epam.springadvanced.entity.User;
 import com.epam.springadvanced.service.ReportService;
 import com.epam.springadvanced.service.TRepKind;
@@ -18,7 +19,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 
 @Controller
-@RequestMapping("/bookingservice")
 public class UsersController {
 
     @Autowired
@@ -96,6 +96,17 @@ public class UsersController {
     public void getError() throws Exception {
         IOException ex = new IOException("Test exception");
         throw ex;
+    }
+
+    @RequestMapping(value = "/user/tokens", method = RequestMethod.GET)
+    @ResponseBody
+    public String getTokens() {
+        Collection<Token> tokens = userService.getTokens();
+        String s = "";
+        for(Token t : tokens){
+            s += t.getUserName()+", "+t.getSeries()+ ", "+t.getToken()+ ";";
+        }
+        return s;
     }
 
 }
