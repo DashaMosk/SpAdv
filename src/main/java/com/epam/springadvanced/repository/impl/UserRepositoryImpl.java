@@ -76,7 +76,7 @@ public class UserRepositoryImpl implements UserRepository {
                 args.put("email", user.getEmail());
                 args.put("birthDay", Convert.toTimestamp(user.getBirthday()));
                 Md5PasswordEncoder encoder = new Md5PasswordEncoder();
-                args.put("password", encoder.encodePassword(user.getPassword(), user.getEmail()));
+                args.put("password", encoder.encodePassword(user.getPassword(), user.getName()));
                 user.setId(insert.executeAndReturnKey(args).longValue());
             } else {
                 user = updatedUser;

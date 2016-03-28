@@ -46,7 +46,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
                 .tokenRepository(persistentTokenRepository()).tokenValiditySeconds(86400).and()
                 .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
                 .csrf().csrfTokenRepository(csrfTokenRepository())
-                //.disable();
                 .requireCsrfProtectionMatcher(csrfRequestMatcher);
     }
 
