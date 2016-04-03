@@ -125,7 +125,6 @@ public class TicketRepositoryImpl implements TicketRepository {
     }
 
     @Override
-    @Transactional
     public void saveBookedTicket(User user, Ticket ticket) {
         if (user != null && user.getId() != null && ticket != null) {
             if(ticket.getId()==null){

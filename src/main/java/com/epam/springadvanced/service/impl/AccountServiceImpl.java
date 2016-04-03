@@ -29,7 +29,6 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    @Transactional
     public void withdraw(long userID, float amount) throws InsufficientAmountOfMoneyException{
         UserAccount account = accountRepository.getByUserId(userID);
         if (account == null) {
