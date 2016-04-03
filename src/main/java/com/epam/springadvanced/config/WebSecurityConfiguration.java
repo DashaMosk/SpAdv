@@ -26,6 +26,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 
 @Configuration
+
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
 

@@ -7,10 +7,12 @@ import com.epam.springadvanced.repository.TicketRepository;
 import com.epam.springadvanced.repository.UserRepository;
 import com.epam.springadvanced.service.Rating;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,6 +40,9 @@ public class TicketRepositoryImpl implements TicketRepository {
             "WHERE u.id = ?";
     private static final String INSERT_INTO_TICKETS = "INSERT INTO tickets(user_id, ticket_id) VALUES (?,?)";
     private static final String DELETE_BOOKED_TICKETS = "DELETE FROM TICKETS WHERE USER_ID = ?";
+    private static final String SELECT_BY_ID = "SELECT t.*, e.* FROM ticket t\n" +
+            "LEFT JOIN event e ON t.event_id = e.id\n" +
+            "WHERE t.id = ?";
 
     @Autowired
     private AuditoriumRepository auditoriumRepository;
@@ -77,6 +82,17 @@ public class TicketRepositoryImpl implements TicketRepository {
     }
 
     @Override
+    public Ticket getById(Long id) {
+        if (id != null) {
+            try {
+                return jdbcTemplate.queryForObject(SELECT_BY_ID, new TicketMapper(), id);
+            } catch (EmptyResultDataAccessException ignored) {
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Collection<Ticket> getAll() {
         Collection<Ticket> tickets = jdbcTemplate.query(SELECT_ALL, new TicketMapper());
         tickets = setAuditorium(tickets);
@@ -109,6 +125,7 @@ public class TicketRepositoryImpl implements TicketRepository {
     }
 
     @Override
+    @Transactional
     public void saveBookedTicket(User user, Ticket ticket) {
         if (user != null && user.getId() != null && ticket != null) {
             if(ticket.getId()==null){

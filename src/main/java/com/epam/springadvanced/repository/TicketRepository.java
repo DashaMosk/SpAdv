@@ -7,6 +7,7 @@ import java.util.Collection;
 
 public interface TicketRepository {
     Ticket save(Ticket ticket);
+    Ticket getById(Long id);
     Collection<Ticket> getAll();
     Collection<Ticket> getByEventName(String eventName);
     Collection<Ticket> getBookedTickets();

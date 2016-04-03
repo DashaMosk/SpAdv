@@ -36,6 +36,13 @@ CREATE TABLE PUBLIC.role (
   name     VARCHAR(256) NOT NULL
 );
 
+CREATE TABLE PUBLIC.account (
+  id        INT PRIMARY KEY NOT NULL IDENTITY,
+  user_id   INT             NOT NULL,
+  amount    FLOAT           NOT NULL,
+  CONSTRAINT FKA_USER_ID FOREIGN KEY (user_id) REFERENCES user (id)
+);
+
 CREATE TABLE PUBLIC.roles(
   id        INT PRIMARY KEY NOT NULL IDENTITY,
   user_id   INT NOT NULL,
@@ -87,4 +94,5 @@ INSERT INTO roles(user_id, role_id) VALUES (1,0);
 
 INSERT INTO event(id,name, ticketPrice, auditorium_id) VALUES (1, 'Consert of classical music', 1.0, 1);
 INSERT INTO ticket(id, price, seat, event_id) VALUES (1, 1.0, 101, 1);
+INSERT INTO ticket(id, price, seat, event_id) VALUES (2, 2.0, 102, 1);
 INSERT INTO tickets(id, user_id, ticket_id) VALUES (1, 1, 1);

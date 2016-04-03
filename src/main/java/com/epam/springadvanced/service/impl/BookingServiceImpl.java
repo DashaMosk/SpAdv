@@ -4,14 +4,12 @@ import com.epam.springadvanced.entity.*;
 import com.epam.springadvanced.repository.AuditoriumRepository;
 import com.epam.springadvanced.repository.TicketRepository;
 import com.epam.springadvanced.service.*;
-import com.epam.springadvanced.service.exception.EventNotAssignedException;
-import com.epam.springadvanced.service.exception.TicketAlreadyBookedException;
-import com.epam.springadvanced.service.exception.TicketWithoutEventException;
-import com.epam.springadvanced.service.exception.UserNotRegisteredException;
+import com.epam.springadvanced.service.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -34,6 +32,8 @@ public class BookingServiceImpl implements BookingService {
     private DiscountService discountService;
     @Autowired
     private AuditoriumRepository auditoriumRepository;
+    @Autowired
+    private AccountService accountService;
 
     @Override
     public float getTicketPrice(Event event, LocalDateTime dateTime, Collection<Integer> seatNumbers, User user) throws
@@ -63,8 +63,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public void bookTicket(User user, Ticket ticket) throws UserNotRegisteredException, TicketAlreadyBookedException,
-            TicketWithoutEventException {
+            TicketWithoutEventException, InsufficientAmountOfMoneyException {
         //if users is null or not registered then throw exception
         Optional.ofNullable(user)
                 .flatMap(u -> Optional.ofNullable(userService.getUserByName(u.getName())))
@@ -75,12 +76,18 @@ public class BookingServiceImpl implements BookingService {
                 .flatMap(t -> Optional.ofNullable(t.getEvent()))
                 .orElseThrow(TicketWithoutEventException::new);
 
+        if(!accountService.hasMoney(user.getId(), ticket.getPrice())){
+            throw new InsufficientAmountOfMoneyException("Insufficient amount of money, user "
+                    + user.getId() + ", amount " + ticket.getPrice());
+        }
+
         //false if ticket already booked for specified event and seat
         boolean notBooked = ticketRepository.getBookedTickets().stream()
                 .noneMatch(t -> t.getEvent().getName().equals(ticket.getEvent().getName()) &&
                                 t.getSeat().getNumber() == ticket.getSeat().getNumber()
                 );
         if (notBooked) {
+            accountService.withdraw(user.getId(), ticket.getPrice());
             ticketRepository.saveBookedTicket(user, ticket);
             log.info(String.format("User <%s> booked ticket with seat number %d for event <%s>",
                     user.getName(),

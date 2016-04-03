@@ -3,6 +3,7 @@ package com.epam.springadvanced.repository.impl;
 import com.epam.springadvanced.entity.Role;
 import com.epam.springadvanced.entity.Token;
 import com.epam.springadvanced.entity.User;
+import com.epam.springadvanced.repository.AccountRepository;
 import com.epam.springadvanced.repository.UserRepository;
 import com.epam.springadvanced.repository.WinsRepository;
 import com.epam.springadvanced.service.Roles;
@@ -42,6 +43,8 @@ public class UserRepositoryImpl implements UserRepository {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private WinsRepository winsRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     public User save(User user) {
@@ -127,6 +130,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void delete(long id) {
         winsRepository.delete(id);
+        accountRepository.delete(id);
         jdbcTemplate.update(DELETE_TICKETS, id);
         jdbcTemplate.update(DELETE_USER_ROLE, id);
         jdbcTemplate.update(DELETE_USER, id);
